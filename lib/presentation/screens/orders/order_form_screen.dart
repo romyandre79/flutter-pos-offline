@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_pos_offline/core/constants/colors.dart';
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/core/utils/currency_formatter.dart';
-import 'package:flutter_pos_offline/core/utils/thousand_separator_formatter.dart';
-import 'package:flutter_pos_offline/data/models/customer.dart';
-import 'package:flutter_pos_offline/data/models/order_item.dart';
-import 'package:flutter_pos_offline/data/models/payment.dart';
-import 'package:flutter_pos_offline/data/models/product.dart';
-import 'package:flutter_pos_offline/data/models/order.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/customer/customer_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/customer/customer_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/order/order_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/order/order_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/product/product_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/product/product_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/unit/unit_cubit.dart';
-import 'package:flutter_pos_offline/presentation/screens/orders/sales_order_item_editor.dart';
+import 'package:kreatif_otopart/core/constants/colors.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/core/utils/currency_formatter.dart';
+import 'package:kreatif_otopart/core/utils/thousand_separator_formatter.dart';
+import 'package:kreatif_otopart/data/models/customer.dart';
+import 'package:kreatif_otopart/data/models/order_item.dart';
+import 'package:kreatif_otopart/data/models/payment.dart';
+import 'package:kreatif_otopart/data/models/product.dart';
+import 'package:kreatif_otopart/data/models/order.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/logic/cubits/customer/customer_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/customer/customer_state.dart';
+import 'package:kreatif_otopart/logic/cubits/order/order_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/order/order_state.dart';
+import 'package:kreatif_otopart/logic/cubits/product/product_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/product/product_state.dart';
+import 'package:kreatif_otopart/logic/cubits/unit/unit_cubit.dart';
+import 'package:kreatif_otopart/presentation/screens/orders/sales_order_item_editor.dart';
 
 class OrderFormScreen extends StatefulWidget {
   const OrderFormScreen({super.key});
@@ -34,6 +34,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   final _customerPhoneController = TextEditingController();
   final _notesController = TextEditingController();
   final _paymentController = TextEditingController();
+  final _kmController = TextEditingController();
+  final _nopolController = TextEditingController();
 
   DateTime _dueDate = DateTime.now();
   PaymentMethod _paymentMethod = PaymentMethod.cash;
@@ -65,6 +67,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     _customerPhoneController.dispose();
     _notesController.dispose();
     _paymentController.dispose();
+    _kmController.dispose();
+    _nopolController.dispose();
     super.dispose();
   }
 
@@ -367,6 +371,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
           initialPayment: payment,
           paymentMethod: _paymentMethod,
           status: _selectedStatus,
+          kmS: int.tryParse(_kmController.text),
+          noPol: _nopolController.text.isNotEmpty ? _nopolController.text : null,
         );
   }
 
@@ -530,6 +536,33 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                         enabled: _selectedCustomer == null,
                       ),
                       keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _nopolController,
+                            decoration: const InputDecoration(
+                              labelText: 'No. Polisi',
+                              prefixIcon: Icon(Icons.directions_car_outlined),
+                              hintText: 'B 1234 ABC',
+                            ),
+                            textCapitalization: TextCapitalization.characters,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _kmController,
+                            decoration: const InputDecoration(
+                              labelText: 'KM Sekarang',
+                              prefixIcon: Icon(Icons.speed_outlined),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 24),

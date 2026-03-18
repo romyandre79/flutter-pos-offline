@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/services/import_service.dart';
-import 'package:flutter_pos_offline/data/models/supplier.dart';
-import 'package:flutter_pos_offline/data/repositories/supplier_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/supplier/supplier_state.dart';
+import 'package:kreatif_otopart/core/services/import_service.dart';
+import 'package:kreatif_otopart/data/models/supplier.dart';
+import 'package:kreatif_otopart/data/repositories/supplier_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/supplier/supplier_state.dart';
 
 class SupplierCubit extends Cubit<SupplierState> {
   final SupplierRepository _supplierRepository;

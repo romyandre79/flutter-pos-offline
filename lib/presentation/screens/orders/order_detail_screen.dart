@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/core/utils/currency_formatter.dart';
-import 'package:flutter_pos_offline/core/utils/date_formatter.dart';
-import 'package:flutter_pos_offline/core/utils/thousand_separator_formatter.dart';
-import 'package:flutter_pos_offline/data/models/order.dart';
-import 'package:flutter_pos_offline/data/models/payment.dart';
-import 'package:flutter_pos_offline/data/models/user.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/order/order_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/order/order_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/printer/printer_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/printer/printer_state.dart';
-import 'package:flutter_pos_offline/core/services/whatsapp_service.dart';
-import 'package:flutter_pos_offline/core/services/pdf_service.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/core/utils/currency_formatter.dart';
+import 'package:kreatif_otopart/core/utils/date_formatter.dart';
+import 'package:kreatif_otopart/core/utils/thousand_separator_formatter.dart';
+import 'package:kreatif_otopart/data/models/order.dart';
+import 'package:kreatif_otopart/data/models/payment.dart';
+import 'package:kreatif_otopart/data/models/user.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/logic/cubits/order/order_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/order/order_state.dart';
+import 'package:kreatif_otopart/logic/cubits/printer/printer_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/printer/printer_state.dart';
+import 'package:kreatif_otopart/core/services/whatsapp_service.dart';
+import 'package:kreatif_otopart/core/services/pdf_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class OrderDetailScreen extends StatefulWidget {

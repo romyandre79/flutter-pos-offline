@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/services/notification_service.dart';
-import 'package:flutter_pos_offline/core/utils/invoice_generator.dart';
-import 'package:flutter_pos_offline/data/models/order.dart';
-import 'package:flutter_pos_offline/data/models/order_item.dart';
-import 'package:flutter_pos_offline/data/models/payment.dart';
-import 'package:flutter_pos_offline/data/repositories/customer_repository.dart';
-import 'package:flutter_pos_offline/data/repositories/order_repository.dart';
-import 'package:flutter_pos_offline/data/repositories/payment_repository.dart';
-import 'package:flutter_pos_offline/data/repositories/product_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/order/order_state.dart';
-import 'package:flutter_pos_offline/core/constants/app_constants.dart';
+import 'package:kreatif_otopart/core/services/notification_service.dart';
+import 'package:kreatif_otopart/core/utils/invoice_generator.dart';
+import 'package:kreatif_otopart/data/models/order.dart';
+import 'package:kreatif_otopart/data/models/order_item.dart';
+import 'package:kreatif_otopart/data/models/payment.dart';
+import 'package:kreatif_otopart/data/repositories/customer_repository.dart';
+import 'package:kreatif_otopart/data/repositories/order_repository.dart';
+import 'package:kreatif_otopart/data/repositories/payment_repository.dart';
+import 'package:kreatif_otopart/data/repositories/product_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/order/order_state.dart';
+import 'package:kreatif_otopart/core/constants/app_constants.dart';
 
 class OrderCubit extends Cubit<OrderState> {
   final OrderRepository _orderRepository;
@@ -88,6 +88,8 @@ class OrderCubit extends Cubit<OrderState> {
     int initialPayment = 0,
     PaymentMethod paymentMethod = PaymentMethod.cash,
     OrderStatus status = OrderStatus.pending,
+    int? kmS,
+    String? noPol,
   }) async {
     if (AppConstants.isDemoMode) {
       final allOrders = await _orderRepository.getAllOrders();
@@ -162,6 +164,8 @@ class OrderCubit extends Cubit<OrderState> {
         paid: paidAmount,
         notes: notes?.trim(),
         createdBy: createdBy,
+        kmS: kmS,
+        noPol: noPol,
       );
 
       // Prepare initial payment if any

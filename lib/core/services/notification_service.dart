@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:flutter_pos_offline/data/models/order.dart';
+import 'package:kreatif_otopart/data/models/order.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();

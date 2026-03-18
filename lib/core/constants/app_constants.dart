@@ -2,16 +2,16 @@ class AppConstants {
   AppConstants._();
 
   // App Info
-  static const String appName = 'Kreatif MajuMU - POS Offline';
+  static const String appName = 'Kreatif Otopart';
   static const String appVersion = '1.0.0';
-  static const String appDescription = 'Aplikasi Kasir POS Offline - Full Offline, Jalan Tanpa Internet!';
+  static const String appDescription = 'Aplikasi Kasir Otopart, Jalan Tanpa/Dengan Internet!';
 
   // Database
-  static const String databaseName = 'kreatif_pos_offline.db';
-  static const int databaseVersion = 8;
+  static const String databaseName = 'kreatif_otopart.db';
+  static const int databaseVersion = 12;
 
   // Invoice
-  static const String defaultInvoicePrefix = 'POS';
+  static const String defaultInvoicePrefix = 'OTOPART';
   static const int invoiceNumberLength = 6;
 
   // Default Values
@@ -57,4 +57,10 @@ class AppConstants {
   static const String defaultStorePhone = '-';
 
   static const bool isDemoMode = true;
+
+  //Fonnte API Key
+  static const String keyFonnte = 'fontte';
+  static const String keyFonnteToken = 'fonnte_token';
+  static const String defaultFontte = '1';
+  static const String defaultFonnteToken = '';
 }

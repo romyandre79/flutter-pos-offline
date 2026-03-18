@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/data/models/user.dart';
-import 'package:flutter_pos_offline/data/repositories/auth_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/data/models/user.dart';
+import 'package:kreatif_otopart/data/repositories/auth_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;

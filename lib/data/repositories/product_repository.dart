@@ -1,5 +1,5 @@
-import 'package:flutter_pos_offline/data/database/database_helper.dart';
-import 'package:flutter_pos_offline/data/models/product.dart';
+import 'package:kreatif_otopart/data/database/database_helper.dart';
+import 'package:kreatif_otopart/data/models/product.dart';
 
 class ProductRepository {
   final DatabaseHelper _databaseHelper;

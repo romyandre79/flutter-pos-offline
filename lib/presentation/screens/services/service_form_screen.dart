@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/core/utils/thousand_separator_formatter.dart';
-import 'package:flutter_pos_offline/data/models/service.dart';
-import 'package:flutter_pos_offline/logic/cubits/service/service_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/service/service_state.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/core/utils/thousand_separator_formatter.dart';
+import 'package:kreatif_otopart/data/models/service.dart';
+import 'package:kreatif_otopart/logic/cubits/service/service_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/service/service_state.dart';
 
 class ServiceFormScreen extends StatefulWidget {
   final Service? service;

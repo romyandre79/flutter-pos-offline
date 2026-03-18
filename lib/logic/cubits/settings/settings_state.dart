@@ -5,12 +5,14 @@ class StoreInfo {
   final String address;
   final String phone;
   final String invoicePrefix;
+  final String fonnteToken;
 
   const StoreInfo({
     required this.name,
     required this.address,
     required this.phone,
     required this.invoicePrefix,
+    required this.fonnteToken,
   });
 
   StoreInfo copyWith({
@@ -18,12 +20,14 @@ class StoreInfo {
     String? address,
     String? phone,
     String? invoicePrefix,
+    String? fonnteToken,
   }) {
     return StoreInfo(
       name: name ?? this.name,
       address: address ?? this.address,
       phone: phone ?? this.phone,
       invoicePrefix: invoicePrefix ?? this.invoicePrefix,
+      fonnteToken: fonnteToken ?? this.fonnteToken,
     );
   }
 }

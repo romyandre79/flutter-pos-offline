@@ -1,8 +1,8 @@
-import 'package:flutter_pos_offline/data/database/database_helper.dart';
-import 'package:flutter_pos_offline/data/models/order.dart';
-import 'package:flutter_pos_offline/data/models/order_item.dart';
-import 'package:flutter_pos_offline/data/models/payment.dart';
-import 'package:flutter_pos_offline/data/repositories/customer_repository.dart';
+import 'package:kreatif_otopart/data/database/database_helper.dart';
+import 'package:kreatif_otopart/data/models/order.dart';
+import 'package:kreatif_otopart/data/models/order_item.dart';
+import 'package:kreatif_otopart/data/models/payment.dart';
+import 'package:kreatif_otopart/data/repositories/customer_repository.dart';
 
 class OrderRepository {
   final DatabaseHelper _databaseHelper;
@@ -116,6 +116,8 @@ class OrderRepository {
         'paid': order.paid,
         'notes': order.notes,
         'created_by': order.createdBy,
+        'km_s': order.kmS,
+        'no_pol': order.noPol,
         'created_at': now,
         'updated_at': now,
       });
@@ -148,14 +150,45 @@ class OrderRepository {
         });
       }
 
-      // If status is DONE, deduct stock
+      // If status is DONE, deduct stock and create reminders
       if (order.status == OrderStatus.done) {
         for (final item in items) {
           if (item.productId != null) {
+            // Deduct stock
             await txn.rawUpdate(
               'UPDATE products SET stock = COALESCE(stock, 0) - ?, updated_at = ? WHERE id = ?',
-              [item.quantity, DateTime.now().toIso8601String(), item.productId],
+              [item.quantity, now, item.productId],
             );
+
+            // Create reminder if expire_km > 0
+            final productResult = await txn.query(
+              'products',
+              columns: ['expire_km', 'name'],
+              where: 'id = ?',
+              whereArgs: [item.productId],
+            );
+
+            if (productResult.isNotEmpty) {
+              final expireKm = productResult.first['expire_km'] as int? ?? 0;
+              final productName = productResult.first['name'] as String? ?? item.serviceName;
+              
+              if (expireKm > 0 && (order.kmS ?? 0) > 0) {
+                await txn.insert('service_reminders', {
+                  'customer_id': customerId,
+                  'customer_name': order.customerName,
+                  'customer_phone': order.customerPhone,
+                  'order_id': orderId,
+                  'no_pol': order.noPol,
+                  'product_id': item.productId,
+                  'product_name': productName,
+                  'last_service_km': order.kmS,
+                  'reminder_km': (order.kmS ?? 0) + expireKm,
+                  'status': 'active',
+                  'created_at': now,
+                  'updated_at': now,
+                });
+              }
+            }
           }
         }
       }
@@ -207,8 +240,24 @@ class OrderRepository {
         whereArgs: [id],
       );
 
-      // If moving to DONE, deduct stock
+      // If moving to DONE, deduct stock and create reminders
       if (newStatus == OrderStatus.done && currentStatus != OrderStatus.done) {
+        final now = DateTime.now().toIso8601String();
+        
+        // Get order details for reminders
+        final orderResult2 = await txn.query(
+          'orders',
+          where: 'id = ?',
+          whereArgs: [id],
+        );
+        if (orderResult2.isEmpty) return;
+        final orderMap = orderResult2.first;
+        final kmS = orderMap['km_s'] as int? ?? 0;
+        final customerId = orderMap['customer_id'] as int?;
+        final customerName = orderMap['customer_name'] as String;
+        final customerPhone = orderMap['customer_phone'] as String?;
+        final noPol = orderMap['no_pol'] as String?;
+
         final itemsResult = await txn.query(
           'order_items',
           where: 'order_id = ?',
@@ -217,14 +266,45 @@ class OrderRepository {
 
         for (final itemMap in itemsResult) {
           final productId = itemMap['product_id'] as int?;
-          // Default to 0 if null, handle int/double conversion
           final quantity = (itemMap['quantity'] as num?)?.toDouble() ?? 0.0;
+          final serviceName = itemMap['service_name'] as String;
 
           if (productId != null) {
+            // Deduct stock
             await txn.rawUpdate(
               'UPDATE products SET stock = COALESCE(stock, 0) - ?, updated_at = ? WHERE id = ?',
-              [quantity, DateTime.now().toIso8601String(), productId],
+              [quantity, now, productId],
             );
+
+            // Create reminder if expire_km > 0
+            final productResult = await txn.query(
+              'products',
+              columns: ['expire_km', 'name'],
+              where: 'id = ?',
+              whereArgs: [productId],
+            );
+
+            if (productResult.isNotEmpty) {
+              final expireKm = productResult.first['expire_km'] as int? ?? 0;
+              final productName = productResult.first['name'] as String? ?? serviceName;
+
+              if (expireKm > 0 && kmS > 0) {
+                await txn.insert('service_reminders', {
+                  'customer_id': customerId,
+                  'customer_name': customerName,
+                  'customer_phone': customerPhone,
+                  'order_id': id,
+                  'no_pol': noPol,
+                  'product_id': productId,
+                  'product_name': productName,
+                  'last_service_km': kmS,
+                  'reminder_km': kmS + expireKm,
+                  'status': 'active',
+                  'created_at': now,
+                  'updated_at': now,
+                });
+              }
+            }
           }
         }
       }

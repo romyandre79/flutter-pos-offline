@@ -48,6 +48,8 @@ class Product extends Equatable {
   final bool isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final int? expireDate;
+  final int? expireKm;
 
   const Product({
     this.id,
@@ -64,6 +66,8 @@ class Product extends Equatable {
     this.isActive = true,
     this.createdAt,
     this.updatedAt,
+    this.expireDate,
+    this.expireKm,
   });
 
   bool get isService => type == ProductType.service;
@@ -85,6 +89,8 @@ class Product extends Equatable {
       'is_active': isActive ? 1 : 0,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'expire_date': expireDate,
+      'expire_km': expireKm,
     };
   }
 
@@ -108,6 +114,8 @@ class Product extends Equatable {
       updatedAt: map['updated_at'] != null
           ? DateTime.parse(map['updated_at'] as String)
           : null,
+      expireDate: map['expire_date'] as int?,
+      expireKm: map['expire_km'] as int?,
     );
   }
 
@@ -126,6 +134,8 @@ class Product extends Equatable {
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? expireDate,
+    int? expireKm,
   }) {
     return Product(
       id: id ?? this.id,
@@ -142,6 +152,8 @@ class Product extends Equatable {
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      expireDate: expireDate ?? this.expireDate,
+      expireKm: expireKm ?? this.expireKm,
     );
   }
 
@@ -161,5 +173,7 @@ class Product extends Equatable {
         isActive,
         createdAt,
         updatedAt,
+        expireDate,
+        expireKm,
       ];
 }

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos_offline/data/models/order_item.dart';
-import 'package:flutter_pos_offline/data/models/payment.dart';
+import 'package:kreatif_otopart/data/models/order_item.dart';
+import 'package:kreatif_otopart/data/models/payment.dart';
 
 enum OrderStatus { pending, process, ready, done }
 
@@ -75,6 +75,8 @@ class Order extends Equatable {
   final int paid;
   final String? notes;
   final int? createdBy;
+  final int? kmS;
+  final String? noPol;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -97,6 +99,8 @@ class Order extends Equatable {
     this.paid = 0,
     this.notes,
     this.createdBy,
+    this.kmS,
+    this.noPol,
     this.createdAt,
     this.updatedAt,
     this.items,
@@ -119,6 +123,8 @@ class Order extends Equatable {
       'paid': paid,
       'notes': notes,
       'created_by': createdBy,
+      'km_s': kmS,
+      'no_pol': noPol,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -142,6 +148,8 @@ class Order extends Equatable {
       paid: (map['paid'] as int?) ?? 0,
       notes: map['notes'] as String?,
       createdBy: map['created_by'] as int?,
+      kmS: map['km_s'] as int?,
+      noPol: map['no_pol'] as String?,
       createdAt: map['created_at'] != null
           ? DateTime.parse(map['created_at'] as String)
           : null,
@@ -166,6 +174,8 @@ class Order extends Equatable {
     int? paid,
     String? notes,
     int? createdBy,
+    int? kmS,
+    String? noPol,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<OrderItem>? items,
@@ -186,6 +196,8 @@ class Order extends Equatable {
       paid: paid ?? this.paid,
       notes: notes ?? this.notes,
       createdBy: createdBy ?? this.createdBy,
+      kmS: kmS ?? this.kmS,
+      noPol: noPol ?? this.noPol,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       items: items ?? this.items,
@@ -255,6 +267,8 @@ class Order extends Equatable {
         paid,
         notes,
         createdBy,
+        kmS,
+        noPol,
         createdAt,
         updatedAt,
       ];

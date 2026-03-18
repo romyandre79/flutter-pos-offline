@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_pos_offline/core/constants/app_constants.dart';
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/data/models/user.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/settings/settings_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/settings/settings_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/user/user_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/customer/customer_cubit.dart';
-import 'package:flutter_pos_offline/presentation/screens/settings/user_management_screen.dart';
-import 'package:flutter_pos_offline/presentation/screens/settings/printer_settings_screen.dart';
-import 'package:flutter_pos_offline/logic/cubits/printer/printer_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/product/product_cubit.dart';
-import 'package:flutter_pos_offline/presentation/screens/products/product_list_screen.dart';
-import 'package:flutter_pos_offline/presentation/screens/customers/customer_list_screen.dart';
-import 'package:flutter_pos_offline/data/repositories/product_repository.dart';
-import 'package:flutter_pos_offline/data/repositories/supplier_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/supplier/supplier_cubit.dart';
-import 'package:flutter_pos_offline/presentation/screens/purchasing/supplier_list_screen.dart';
-import 'package:flutter_pos_offline/data/repositories/unit_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/unit/unit_cubit.dart';
-import 'package:flutter_pos_offline/presentation/screens/settings/unit_list_screen.dart';
-import 'package:flutter_pos_offline/data/services/database_service.dart';
+import 'package:kreatif_otopart/core/constants/app_constants.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/data/models/user.dart';
+import 'package:kreatif_otopart/presentation/screens/settings/service_reminder_screen.dart';
+import 'package:kreatif_otopart/data/repositories/pengumuman_template_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/logic/cubits/settings/settings_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/settings/settings_state.dart';
+import 'package:kreatif_otopart/logic/cubits/user/user_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/customer/customer_cubit.dart';
+import 'package:kreatif_otopart/presentation/screens/settings/user_management_screen.dart';
+import 'package:kreatif_otopart/presentation/screens/settings/printer_settings_screen.dart';
+import 'package:kreatif_otopart/logic/cubits/printer/printer_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/product/product_cubit.dart';
+import 'package:kreatif_otopart/presentation/screens/products/product_list_screen.dart';
+import 'package:kreatif_otopart/presentation/screens/customers/customer_list_screen.dart';
+import 'package:kreatif_otopart/data/repositories/product_repository.dart';
+import 'package:kreatif_otopart/data/repositories/supplier_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/supplier/supplier_cubit.dart';
+import 'package:kreatif_otopart/presentation/screens/purchasing/supplier_list_screen.dart';
+import 'package:kreatif_otopart/data/repositories/unit_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/unit/unit_cubit.dart';
+import 'package:kreatif_otopart/presentation/screens/settings/unit_list_screen.dart';
+import 'package:kreatif_otopart/data/services/database_service.dart';
+import 'package:kreatif_otopart/presentation/screens/pengumuman/pengumuman_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,17 +37,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late SettingsCubit _settingsCubit;
-
   @override
   void initState() {
     super.initState();
-    _settingsCubit = SettingsCubit()..loadSettings();
   }
 
   @override
   void dispose() {
-    _settingsCubit.close();
     super.dispose();
   }
 
@@ -383,7 +383,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
         BlocListener<SettingsCubit, SettingsState>(
-          bloc: _settingsCubit,
           listener: (context, state) {
             if (state is SettingsUpdated) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -417,7 +416,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Settings content
                 Expanded(
                   child: BlocBuilder<SettingsCubit, SettingsState>(
-                    bloc: _settingsCubit,
                     builder: (context, settingsState) {
                       // Get store info from state
                       StoreInfo? storeInfo;
@@ -426,7 +424,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       } else if (settingsState is SettingsUpdated) {
                         storeInfo = settingsState.storeInfo;
                       } else {
-                        storeInfo = _settingsCubit.currentInfo;
+                        storeInfo = context.read<SettingsCubit>().currentInfo;
                       }
 
                       return ListView(
@@ -453,7 +451,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   hint: 'Masukkan nama toko',
                                   icon: Icons.store,
                                   onSave: (value) =>
-                                      _settingsCubit.updateStoreName(value),
+                                      context.read<SettingsCubit>().updateStoreName(value),
                                 ),
                               ),
                               _buildDivider(),
@@ -472,7 +470,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   hint: 'Masukkan alamat toko',
                                   icon: Icons.location_on,
                                   maxLines: 2,
-                                  onSave: (value) => _settingsCubit
+                                  onSave: (value) => context.read<SettingsCubit>()
                                       .updateStoreAddress(value),
                                 ),
                               ),
@@ -493,7 +491,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   icon: Icons.phone,
                                   keyboardType: TextInputType.phone,
                                   onSave: (value) =>
-                                      _settingsCubit.updateStorePhone(value),
+                                      context.read<SettingsCubit>().updateStorePhone(value),
                                 ),
                               ),
                             ],
@@ -501,7 +499,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                             // Service Management Section
                           _buildSection(
-                            title: 'Layanan',
+                            title: 'Master Data',
                             children: [
                               if (user != null && (user.role == UserRole.owner || user.canAccessItems))
                                 _buildSettingTile(
@@ -563,13 +561,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   );
                                 },
                               ),
-                            ],
-                          ),
-
-                          // Customer Management Section
-                          _buildSection(
-                            title: 'Pelanggan',
-                            children: [
+                              if (user != null && (user.role == UserRole.owner || user.canAccessSuppliers))
+                              _buildDivider(),
+                              if (user != null && (user.role == UserRole.owner || user.canAccessSuppliers))
                               _buildSettingTile(
                                 context: context,
                                 icon: Icons.people_alt,
@@ -610,7 +604,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   icon: Icons.receipt,
                                   maxLength: 10,
                                   onSave: (value) =>
-                                      _settingsCubit.updateInvoicePrefix(value),
+                                      context.read<SettingsCubit>().updateInvoicePrefix(value),
                                 ),
                               ),
                               _buildDivider(),
@@ -630,6 +624,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   );
                                 },
+                              ),
+                              _buildDivider(),
+                              _buildSettingTile(
+                                context: context,
+                                icon: Icons.message,
+                                title: 'Fonnte API Token',
+                                subtitle: storeInfo?.fonnteToken.isNotEmpty == true
+                                    ? 'Token terisi'
+                                    : 'Akses API WhatsApp Gateway',
+                                onTap: () => _showEditDialog(
+                                  title: 'Edit Fonnte API Token',
+                                  currentValue: storeInfo?.fonnteToken ?? '',
+                                  hint: 'Masukkan Fonnte API Token',
+                                  icon: Icons.message,
+                                  onSave: (value) =>
+                                      context.read<SettingsCubit>().updateFonnteToken(value),
+                                ),
                               ),
                             ],
                           ),
@@ -817,6 +828,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             child: const Text('Hapus Data'),
                                           ),
                                         ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                _buildDivider(),
+                                _buildSettingTile(
+                                  context: context,
+                                  icon: Icons.campaign,
+                                  title: 'Kirim Pengumuman',
+                                  subtitle: 'Kirim pesan ke pelanggan',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (_) => CustomerCubit()..loadCustomers(),
+                                            ),
+                                            BlocProvider(
+                                              create: (_) => PengumumanTemplateCubit(
+                                                PengumumanTemplateRepository(),
+                                              )..loadTemplates(),
+                                            ),
+                                          ],
+                                          child: const PengumumanScreen(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                _buildDivider(),
+                                _buildSettingTile(
+                                  context: context,
+                                  icon: Icons.notifications_active_outlined,
+                                  title: 'Reminder Service Berkala',
+                                  subtitle: 'Lihat jadwal service customer',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BlocProvider(
+                                          create: (context) => PengumumanTemplateCubit(
+                                            PengumumanTemplateRepository(),
+                                          )..loadTemplates(),
+                                          child: const ServiceReminderScreen(),
+                                        ),
                                       ),
                                     );
                                   },

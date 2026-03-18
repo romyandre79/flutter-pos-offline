@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_pos_offline/core/constants/app_constants.dart';
-import 'package:flutter_pos_offline/core/utils/password_helper.dart';
+import 'package:kreatif_otopart/core/constants/app_constants.dart';
+import 'package:kreatif_otopart/core/utils/password_helper.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -131,6 +131,8 @@ class DatabaseHelper {
         paid INTEGER DEFAULT 0,
         notes TEXT,
         created_by INTEGER,
+        km_s INTEGER DEFAULT 0,
+        no_pol TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
@@ -238,6 +240,40 @@ class DatabaseHelper {
       )
     ''');
 
+    // Pengumuman Template table
+    await db.execute('''
+      CREATE TABLE pengumuman_template (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        judul TEXT,
+        isi TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+
+    // Service Reminders table
+    await db.execute('''
+      CREATE TABLE service_reminders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+        customer_name TEXT NOT NULL,
+        customer_phone TEXT,
+        order_id INTEGER,
+        no_pol TEXT,
+        product_id INTEGER,
+        product_name TEXT NOT NULL,
+        last_service_km INTEGER,
+        reminder_km INTEGER NOT NULL,
+        is_sent INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'active', -- active, completed, cancelled
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
+        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+      )
+    ''');
+
     // Create indexes
     await _createIndexes(db);
 
@@ -270,6 +306,11 @@ class DatabaseHelper {
     // Products indexes
     await db.execute('CREATE INDEX idx_products_type ON products(type)');
     await db.execute('CREATE INDEX idx_products_name ON products(name)');
+
+    // Service Reminders indexes
+    await db.execute('CREATE INDEX idx_reminders_customer ON service_reminders(customer_id)');
+    await db.execute('CREATE INDEX idx_reminders_status ON service_reminders(status)');
+    await db.execute('CREATE INDEX idx_reminders_km ON service_reminders(reminder_km)');
   }
 
   Future<void> _seedData(Database db) async {
@@ -553,6 +594,47 @@ class DatabaseHelper {
         await db.execute('ALTER TABLE products ADD COLUMN barcode TEXT');
         await db.execute('CREATE INDEX idx_products_barcode ON products(barcode)');
       }
+    }
+
+    if (oldVersion < 9) {
+      await db.execute('ALTER TABLE orders ADD COLUMN is_synced INTEGER DEFAULT 0');
+    }
+
+    if (oldVersion < 10) {
+      await db.execute('ALTER TABLE products ADD COLUMN expire_date INTEGER DEFAULT 0');
+      await db.execute('ALTER TABLE products ADD COLUMN expire_km INTEGER DEFAULT 0');
+      await db.execute('ALTER TABLE orders ADD COLUMN km_s INTEGER DEFAULT 0');
+    }
+
+    if (oldVersion < 11) {
+      await db.execute('ALTER TABLE orders ADD COLUMN no_pol TEXT');
+    }
+
+    if (oldVersion < 12) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS service_reminders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          customer_id INTEGER,
+          customer_name TEXT NOT NULL,
+          customer_phone TEXT,
+          order_id INTEGER,
+          no_pol TEXT,
+          product_id INTEGER,
+          product_name TEXT NOT NULL,
+          last_service_km INTEGER,
+          reminder_km INTEGER NOT NULL,
+          is_sent INTEGER DEFAULT 0,
+          status TEXT DEFAULT 'active',
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
+          FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+          FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+        )
+      ''');
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_customer ON service_reminders(customer_id)');
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_status ON service_reminders(status)');
+      await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_km ON service_reminders(reminder_km)');
     }
   }
 

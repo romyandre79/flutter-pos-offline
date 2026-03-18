@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/constants/app_constants.dart';
-import 'package:flutter_pos_offline/data/repositories/settings_repository.dart';
-import 'package:flutter_pos_offline/logic/cubits/settings/settings_state.dart';
+import 'package:kreatif_otopart/core/constants/app_constants.dart';
+import 'package:kreatif_otopart/data/repositories/settings_repository.dart';
+import 'package:kreatif_otopart/logic/cubits/settings/settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   final SettingsRepository _repository;
@@ -28,6 +28,8 @@ class SettingsCubit extends Cubit<SettingsState> {
             AppConstants.defaultStorePhone,
         invoicePrefix: settings[AppConstants.keyInvoicePrefix] ??
             AppConstants.defaultInvoicePrefix,
+        fonnteToken: settings[AppConstants.keyFonnteToken] ??
+            AppConstants.defaultFonnteToken,
       );
 
       _currentInfo = storeInfo;
@@ -136,6 +138,26 @@ class SettingsCubit extends Cubit<SettingsState> {
     } catch (e) {
       emit(SettingsError(
           message: 'Gagal memperbarui prefix invoice: ${e.toString()}'));
+    }
+  }
+
+  Future<void> updateFonnteToken(String token) async {
+    emit(SettingsUpdating());
+
+    try {
+      await _repository.setSetting(
+          AppConstants.keyFonnteToken, token.trim());
+
+      final updatedInfo = _currentInfo!.copyWith(fonnteToken: token.trim());
+      _currentInfo = updatedInfo;
+
+      emit(SettingsUpdated(
+        message: 'Fonnte API Token berhasil diperbarui',
+        storeInfo: updatedInfo,
+      ));
+    } catch (e) {
+      emit(SettingsError(
+          message: 'Gagal memperbarui Fonnte Token: ${e.toString()}'));
     }
   }
 }

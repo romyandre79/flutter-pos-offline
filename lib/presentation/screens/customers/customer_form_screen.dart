@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/data/models/customer.dart';
-import 'package:flutter_pos_offline/logic/cubits/customer/customer_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/customer/customer_state.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/data/models/customer.dart';
+import 'package:kreatif_otopart/logic/cubits/customer/customer_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/customer/customer_state.dart';
 
 class CustomerFormScreen extends StatefulWidget {
   final Customer? customer;

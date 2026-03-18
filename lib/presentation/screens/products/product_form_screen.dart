@@ -6,16 +6,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'package:flutter_pos_offline/core/theme/app_theme.dart';
-import 'package:flutter_pos_offline/data/models/product.dart';
-import 'package:flutter_pos_offline/logic/cubits/product/product_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
-import 'package:flutter_pos_offline/logic/cubits/auth/auth_state.dart';
-import 'package:flutter_pos_offline/data/models/user.dart';
-import 'package:flutter_pos_offline/data/models/unit.dart';
-import 'package:flutter_pos_offline/logic/cubits/unit/unit_cubit.dart';
-import 'package:flutter_pos_offline/logic/cubits/unit/unit_state.dart';
+import 'package:kreatif_otopart/core/theme/app_theme.dart';
+import 'package:kreatif_otopart/data/models/product.dart';
+import 'package:kreatif_otopart/logic/cubits/product/product_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_otopart/data/models/user.dart';
+import 'package:kreatif_otopart/data/models/unit.dart';
+import 'package:kreatif_otopart/logic/cubits/unit/unit_cubit.dart';
+import 'package:kreatif_otopart/logic/cubits/unit/unit_state.dart';
 
 class ProductFormScreen extends StatefulWidget {
   final Product? product;
@@ -35,6 +35,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   late TextEditingController _durationController;
   late TextEditingController _descriptionController;
   late TextEditingController _barcodeController;
+  late TextEditingController _expireDateController;
+  late TextEditingController _expireKmController;
   
   File? _imageFile;
   // final ImagePicker _picker = ImagePicker(); // Removed
@@ -53,6 +55,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _durationController = TextEditingController(text: product?.durationDays?.toString() ?? '3');
     _descriptionController = TextEditingController(text: product?.description);
     _barcodeController = TextEditingController(text: product?.barcode);
+    _expireDateController = TextEditingController(text: product?.expireDate?.toString() ?? '');
+    _expireKmController = TextEditingController(text: product?.expireKm?.toString() ?? '');
 
     if (product != null) {
       _selectedType = product.type;
@@ -72,6 +76,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _durationController.dispose();
     _descriptionController.dispose();
     _barcodeController.dispose();
+    _expireDateController.dispose();
+    _expireKmController.dispose();
     super.dispose();
   }
 
@@ -190,6 +196,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             ? int.tryParse(_durationController.text) ?? 1 
             : null,
         imageUrl: imagePath ?? widget.product?.imageUrl,
+        expireDate: int.tryParse(_expireDateController.text),
+        expireKm: int.tryParse(_expireKmController.text),
       );
 
       if (widget.product == null) {
@@ -485,7 +493,56 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   },
                 ),
               ],
-              
+
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _expireDateController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'Jumlah Hari Kedaluwarsa',
+                        prefixIcon: const Icon(Icons.inventory, color: AppThemeColors.primary),
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.mdRadius,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Jumlah Hari tidak boleh kosong';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Harus berupa angka';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _expireKmController,
+                      keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Kilometer Kedaluwarsa',
+                  prefixIcon: const Icon(Icons.inventory, color: AppThemeColors.primary),
+                  border: OutlineInputBorder(
+                    borderRadius: AppRadius.mdRadius,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Kilometer tidak boleh kosong';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
+                  }
+                  return null;
+                },
+              ),
+              ),
+                ]),
               const SizedBox(height: AppSpacing.lg),
               
               // Description
