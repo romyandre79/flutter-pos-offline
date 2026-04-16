@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kreatif_pos_offline/data/models/cart_item.dart';
 import 'package:kreatif_pos_offline/data/models/product.dart';
+import 'package:kreatif_pos_offline/data/models/product_unit.dart';
 import 'package:kreatif_pos_offline/data/models/customer.dart';
 import 'package:kreatif_pos_offline/data/repositories/product_repository.dart';
 import 'package:kreatif_pos_offline/logic/cubits/pos/pos_state.dart';
@@ -74,8 +75,13 @@ class PosCubit extends Cubit<PosState> {
       final currentState = state as PosLoaded;
       final currentCart = List<CartItem>.from(currentState.cartItems);
 
-      // Check if product already in cart
-      final existingIndex = currentCart.indexWhere((item) => item.product.id == product.id);
+      // Default unit to the first one available, if any
+      final selectedUnit = product.units.isNotEmpty ? product.units.first : null;
+
+      // Check if product with same unit already in cart
+      final existingIndex = currentCart.indexWhere(
+        (item) => item.product.id == product.id && item.selectedUnit?.id == selectedUnit?.id
+      );
 
       if (existingIndex >= 0) {
         // Increment quantity
@@ -84,14 +90,46 @@ class PosCubit extends Cubit<PosState> {
           quantity: existingItem.quantity + 1,
         );
       } else {
-        // Add new item
+        // Add new item with default customer discount if available
+        int discountPerUnit = 0;
+        final basePrice = selectedUnit?.price ?? product.price;
+
+        if (currentState.selectedCustomer != null && currentState.selectedCustomer!.defaultDiscount > 0) {
+          discountPerUnit = (basePrice * currentState.selectedCustomer!.defaultDiscount / 100).round();
+        }
+
         currentCart.add(CartItem(
           product: product,
           quantity: 1,
+          discount: discountPerUnit,
+          selectedUnit: selectedUnit,
         ));
       }
 
       emit(currentState.copyWith(cartItems: currentCart));
+    }
+  }
+
+  // Update unit for an item in the cart
+  void updateUnit(CartItem item, ProductUnit newUnit) {
+    if (state is PosLoaded) {
+      final currentState = state as PosLoaded;
+      final currentCart = List<CartItem>.from(currentState.cartItems);
+
+      final index = currentCart.indexWhere((i) => i == item);
+      if (index >= 0) {
+        // Recalculate discount if customer is selected
+        int discountPerUnit = 0;
+        if (currentState.selectedCustomer != null && currentState.selectedCustomer!.defaultDiscount > 0) {
+          discountPerUnit = (newUnit.price * currentState.selectedCustomer!.defaultDiscount / 100).round();
+        }
+
+        currentCart[index] = currentCart[index].copyWith(
+          selectedUnit: newUnit,
+          discount: discountPerUnit,
+        );
+        emit(currentState.copyWith(cartItems: currentCart));
+      }
     }
   }
 
@@ -127,9 +165,21 @@ class PosCubit extends Cubit<PosState> {
   void selectCustomer(Customer? customer) {
     if (state is PosLoaded) {
       final currentState = state as PosLoaded;
+      
+      // Update all cart items with the new default discount
+      final currentCart = List<CartItem>.from(currentState.cartItems);
+      final double discountPercent = customer?.defaultDiscount ?? 0;
+      
+      for (int i = 0; i < currentCart.length; i++) {
+        final int basePrice = currentCart[i].selectedUnit?.price ?? currentCart[i].product.price;
+        final int discountPerUnit = (basePrice * discountPercent / 100).round();
+        currentCart[i] = currentCart[i].copyWith(discount: discountPerUnit);
+      }
+
       emit(currentState.copyWith(
         selectedCustomer: customer,
         customerName: customer?.name ?? 'Walk-in Customer',
+        cartItems: currentCart,
       ));
     }
   }
@@ -145,8 +195,43 @@ class PosCubit extends Cubit<PosState> {
     }
   }
 
-  // Update quantity directly (optional, if needed)
-  void updateQuantity(Product product, int quantity) {
-    // Implementation similiar to addToCart but setting specific quantity
+  // Update quantity directly
+  void updateQuantity(Product product, double quantity) {
+    if (state is PosLoaded) {
+      final currentState = state as PosLoaded;
+      final currentCart = List<CartItem>.from(currentState.cartItems);
+
+      final index = currentCart.indexWhere((i) => i.product.id == product.id);
+      if (index >= 0) {
+        if (quantity <= 0) {
+          currentCart.removeAt(index);
+        } else {
+          currentCart[index] = currentCart[index].copyWith(quantity: quantity);
+        }
+        emit(currentState.copyWith(cartItems: currentCart));
+      }
+    }
+  }
+
+  // Update item discount in Rupiah (per unit)
+  void updateItemDiscount(Product product, int discountAmount) {
+    if (state is PosLoaded) {
+      final currentState = state as PosLoaded;
+      final currentCart = List<CartItem>.from(currentState.cartItems);
+
+      final index = currentCart.indexWhere((i) => i.product.id == product.id);
+      if (index >= 0) {
+        currentCart[index] = currentCart[index].copyWith(discount: discountAmount);
+        emit(currentState.copyWith(cartItems: currentCart));
+      }
+    }
+  }
+
+  // Update order-level discount in Rupiah
+  void updateOrderDiscount(int discountAmount) {
+    if (state is PosLoaded) {
+      final currentState = state as PosLoaded;
+      emit(currentState.copyWith(orderDiscount: discountAmount));
+    }
   }
 }

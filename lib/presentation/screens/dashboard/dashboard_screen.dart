@@ -23,6 +23,7 @@ import 'package:kreatif_pos_offline/data/repositories/purchase_order_repository.
 import 'package:kreatif_pos_offline/logic/cubits/supplier/supplier_cubit.dart';
 import 'package:kreatif_pos_offline/data/repositories/supplier_repository.dart';
 import 'package:kreatif_pos_offline/presentation/screens/pos/pos_screen.dart';
+import 'package:kreatif_pos_offline/presentation/screens/inventory/unit_conversion_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final Function(int index)? onSwitchTab;
@@ -441,6 +442,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         create: (_) => PrinterCubit(),
                         child: const PrinterSettingsScreen(),
                       ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: _buildQuickActionItem(
+                icon: Icons.sync_alt,
+                label: 'Konversi',
+                color: Colors.blueAccent,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UnitConversionScreen(),
                     ),
                   );
                 },

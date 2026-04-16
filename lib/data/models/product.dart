@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:kreatif_pos_offline/data/models/product_unit.dart';
 
 enum ProductType { service, goods }
 
@@ -50,6 +51,7 @@ class Product extends Equatable {
   final DateTime? updatedAt;
   final int? expireDate;
   final int? expireKm;
+  final List<ProductUnit> units;
 
   const Product({
     this.id,
@@ -68,7 +70,16 @@ class Product extends Equatable {
     this.updatedAt,
     this.expireDate,
     this.expireKm,
+    this.units = const [],
   });
+
+  ProductUnit? get baseUnit => units.isNotEmpty ? units.first : null;
+
+  String get stockDisplay {
+    if (isService) return '-';
+    if (units.isEmpty) return '${stock ?? 0} $unit';
+    return units.map((u) => '${u.stock} ${u.unitName}').join(', ');
+  }
 
   bool get isService => type == ProductType.service;
   bool get isGoods => type == ProductType.goods;
@@ -91,6 +102,8 @@ class Product extends Equatable {
       'updated_at': updatedAt?.toIso8601String(),
       'expire_date': expireDate,
       'expire_km': expireKm,
+      'price': units.isNotEmpty ? units.first.price : price,
+      'stock': units.isNotEmpty ? units.first.stock : stock,
     };
   }
 
@@ -116,6 +129,7 @@ class Product extends Equatable {
           : null,
       expireDate: map['expire_date'] as int?,
       expireKm: map['expire_km'] as int?,
+      units: (map['units'] as List?)?.map((u) => ProductUnit.fromMap(u)).toList() ?? [],
     );
   }
 
@@ -154,6 +168,7 @@ class Product extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
       expireDate: expireDate ?? this.expireDate,
       expireKm: expireKm ?? this.expireKm,
+      units: units ?? this.units,
     );
   }
 
@@ -175,5 +190,6 @@ class Product extends Equatable {
         updatedAt,
         expireDate,
         expireKm,
+        units,
       ];
 }

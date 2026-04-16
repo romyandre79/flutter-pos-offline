@@ -78,6 +78,7 @@ class DatabaseHelper {
         total_orders INTEGER DEFAULT 0,
         total_spent INTEGER DEFAULT 0,
         last_order_date TEXT,
+        default_discount REAL DEFAULT 0,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT DEFAULT CURRENT_TIMESTAMP
       )
@@ -130,11 +131,13 @@ class DatabaseHelper {
         total_items INTEGER DEFAULT 0,
         total_weight REAL DEFAULT 0,
         total_price INTEGER NOT NULL,
+        total_discount INTEGER DEFAULT 0,
         paid INTEGER DEFAULT 0,
         notes TEXT,
         created_by INTEGER,
         km_s INTEGER DEFAULT 0,
         no_pol TEXT,
+        is_synced INTEGER DEFAULT 0,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
@@ -152,11 +155,46 @@ class DatabaseHelper {
         quantity REAL NOT NULL,
         unit TEXT NOT NULL,
         price_per_unit INTEGER NOT NULL,
+        discount INTEGER DEFAULT 0,
         subtotal INTEGER NOT NULL,
         product_id INTEGER,
+        unit_id INTEGER,
         FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
         FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL,
+        FOREIGN KEY (unit_id) REFERENCES product_units(id) ON DELETE SET NULL
+      )
+    ''');
+
+    // Create Product Units table
+    await db.execute('''
+      CREATE TABLE product_units (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        unit_name TEXT NOT NULL,
+        price INTEGER NOT NULL,
+        cost INTEGER DEFAULT 0,
+        multiplier REAL DEFAULT 1.0,
+        parent_unit_id INTEGER,
+        stock REAL DEFAULT 0.0,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+        FOREIGN KEY (parent_unit_id) REFERENCES product_units(id) ON DELETE SET NULL
+      )
+    ''');
+
+    // Create Unit Conversions table
+    await db.execute('''
+      CREATE TABLE unit_conversions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        from_unit_id INTEGER NOT NULL,
+        to_unit_id INTEGER NOT NULL,
+        from_qty REAL NOT NULL,
+        to_qty REAL NOT NULL,
+        conversion_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+        FOREIGN KEY (from_unit_id) REFERENCES product_units(id) ON DELETE CASCADE,
+        FOREIGN KEY (to_unit_id) REFERENCES product_units(id) ON DELETE CASCADE
       )
     ''');
 
@@ -637,6 +675,75 @@ class DatabaseHelper {
       await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_customer ON service_reminders(customer_id)');
       await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_status ON service_reminders(status)');
       await db.execute('CREATE INDEX IF NOT EXISTS idx_reminders_km ON service_reminders(reminder_km)');
+    }
+
+    if (oldVersion < 13) {
+      // Add default_discount to customers
+      await db.execute('ALTER TABLE customers ADD COLUMN default_discount REAL DEFAULT 0');
+      // Add total_discount to orders
+      await db.execute('ALTER TABLE orders ADD COLUMN total_discount INTEGER DEFAULT 0');
+      // Add discount to order_items
+      await db.execute('ALTER TABLE order_items ADD COLUMN discount INTEGER DEFAULT 0');
+    }
+
+    if (oldVersion < 14) {
+      // Create Product Units table
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS product_units (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          product_id INTEGER NOT NULL,
+          unit_name TEXT NOT NULL,
+          price INTEGER NOT NULL,
+          cost INTEGER DEFAULT 0,
+          multiplier REAL DEFAULT 1.0,
+          parent_unit_id INTEGER,
+          stock REAL DEFAULT 0.0,
+          FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+          FOREIGN KEY (parent_unit_id) REFERENCES product_units(id) ON DELETE SET NULL
+        )
+      ''');
+
+      // Create Unit Conversions table
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS unit_conversions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          product_id INTEGER NOT NULL,
+          from_unit_id INTEGER NOT NULL,
+          to_unit_id INTEGER NOT NULL,
+          from_qty REAL NOT NULL,
+          to_qty REAL NOT NULL,
+          conversion_date TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+          FOREIGN KEY (from_unit_id) REFERENCES product_units(id) ON DELETE CASCADE,
+          FOREIGN KEY (to_unit_id) REFERENCES product_units(id) ON DELETE CASCADE
+        )
+      ''');
+
+      // Add unit_id to order_items
+      final columns = await db.rawQuery('PRAGMA table_info(order_items)');
+      final hasUnitIdColumn = columns.any((col) => col['name'] == 'unit_id');
+      if (!hasUnitIdColumn) {
+        await db.execute('ALTER TABLE order_items ADD COLUMN unit_id INTEGER');
+      }
+
+      // Migrate existing products to product_units
+      final products = await db.rawQuery('SELECT * FROM products WHERE type = "goods"');
+      for (var p in products) {
+        final productId = p['id'] as int;
+        final unitName = p['unit'] as String;
+        final price = p['price'] as int;
+        final cost = p['cost'] as int;
+        final stock = (p['stock'] as num?)?.toDouble() ?? 0.0;
+
+        await db.insert('product_units', {
+          'product_id': productId,
+          'unit_name': unitName,
+          'price': price,
+          'cost': cost,
+          'multiplier': 1.0,
+          'stock': stock,
+        });
+      }
     }
   }
 

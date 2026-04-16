@@ -13,7 +13,8 @@ import 'package:kreatif_pos_offline/logic/cubits/auth/auth_cubit.dart';
 import 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart';
 import 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart';
 import 'package:kreatif_pos_offline/data/models/user.dart';
-import 'package:kreatif_pos_offline/data/models/unit.dart';
+import 'package:kreatif_pos_offline/data/models/unit.dart' as app_unit;
+import 'package:kreatif_pos_offline/data/models/product_unit.dart';
 import 'package:kreatif_pos_offline/logic/cubits/unit/unit_cubit.dart';
 import 'package:kreatif_pos_offline/logic/cubits/unit/unit_state.dart';
 
@@ -43,6 +44,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
   ProductType _selectedType = ProductType.service;
   String _selectedUnit = 'pcs';
+  List<ProductUnit> _units = [];
 
   @override
   void initState() {
@@ -64,6 +66,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       if (product.imageUrl != null) {
         _imageFile = File(product.imageUrl!);
       }
+      _units = List.from(product.units);
     }
   }
 
@@ -198,6 +201,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         imageUrl: imagePath ?? widget.product?.imageUrl,
         expireDate: int.tryParse(_expireDateController.text),
         expireKm: int.tryParse(_expireKmController.text),
+        units: _selectedType == ProductType.goods ? _units : [],
       );
 
       if (widget.product == null) {
@@ -486,12 +490,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Stok tidak boleh kosong';
                     }
-                    if (int.tryParse(value) == null) {
+                    if (double.tryParse(value) == null) {
                       return 'Harus berupa angka';
                     }
                     return null;
                   },
                 ),
+                const SizedBox(height: AppSpacing.lg),
+                _buildUnitManagement(),
               ],
 
               const SizedBox(height: AppSpacing.lg),
@@ -615,4 +621,172 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       ),
     );
   }
+
+  Widget _buildUnitManagement() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Manajemen Satuan', style: AppTypography.titleMedium),
+            TextButton.icon(
+              onPressed: _addUnitField,
+              icon: const Icon(Icons.add),
+              label: const Text('Tambah Satuan'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        if (_units.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Text(
+                'Belum ada satuan tambahan.\nSatuan utama akan otomatis digunakan.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySmall.copyWith(color: AppThemeColors.textSecondary),
+              ),
+            ),
+          ),
+        ..._units.asMap().entries.map((entry) {
+          final index = entry.key;
+          final unit = entry.value;
+          return _buildUnitItem(index, unit);
+        }).toList(),
+      ],
+    );
+  }
+
+  Widget _buildUnitItem(int index, ProductUnit unit) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadius.mdRadius,
+        side: const BorderSide(color: AppThemeColors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: BlocBuilder<UnitCubit, UnitState>(
+                    builder: (context, state) {
+                      List<app_unit.Unit> units = [];
+                      if (state is UnitLoaded) units = state.units;
+                      return DropdownButtonFormField<String>(
+                        value: units.any((u) => u.name == unit.unitName) ? unit.unitName : null,
+                        items: units.map((u) => DropdownMenuItem(value: u.name, child: Text(u.name))).toList(),
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() {
+                              _units[index] = _units[index].copyWith(unitName: val);
+                            });
+                          }
+                        },
+                        decoration: const InputDecoration(labelText: 'Nama Satuan'),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    initialValue: unit.price.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Harga', prefixText: 'Rp '),
+                    onChanged: (val) {
+                      final price = int.tryParse(val) ?? 0;
+                      setState(() {
+                        _units[index] = _units[index].copyWith(price: price);
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => setState(() => _units.removeAt(index)),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: unit.multiplier.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Isi (Multiplier)',
+                      helperText: 'Berapa qty satuan induk?',
+                    ),
+                    onChanged: (val) {
+                      final multiplier = double.tryParse(val) ?? 1.0;
+                      setState(() {
+                        _units[index] = _units[index].copyWith(multiplier: multiplier);
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: DropdownButtonFormField<int?>(
+                    value: unit.parentUnitId,
+                    items: [
+                      const DropdownMenuItem<int?>(value: null, child: Text('Tanpa Induk')),
+                      ..._units
+                          .asMap()
+                          .entries
+                          .where((e) => e.key != index) // Cannot be own parent
+                          .map((e) => DropdownMenuItem<int?>(
+                                value: e.value.id ?? -1 - e.key, // Use temp ID if new
+                                child: Text(e.value.unitName),
+                              )),
+                    ],
+                    onChanged: (val) {
+                      setState(() {
+                        _units[index] = _units[index].copyWith(parentUnitId: val);
+                      });
+                    },
+                    decoration: const InputDecoration(labelText: 'Satuan Induk'),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: TextFormField(
+                    initialValue: unit.stock.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Stok'),
+                    onChanged: (val) {
+                      final stock = double.tryParse(val) ?? 0.0;
+                      setState(() {
+                        _units[index] = _units[index].copyWith(stock: stock);
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _addUnitField() {
+    setState(() {
+      _units.add(ProductUnit(
+        unitName: _units.isEmpty ? _selectedUnit : 'pcs',
+        price: int.tryParse(_priceController.text) ?? 0,
+        cost: int.tryParse(_costController.text) ?? 0,
+        multiplier: 1.0,
+        stock: 0.0,
+      ));
+    });
+  }
 }
+
