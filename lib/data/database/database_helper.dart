@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:kreatif_otopart/core/constants/app_constants.dart';
-import 'package:kreatif_otopart/core/utils/password_helper.dart';
+import 'package:kreatif_pos_offline/core/constants/app_constants.dart';
+import 'package:kreatif_pos_offline/core/utils/password_helper.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -19,7 +19,9 @@ class DatabaseHelper {
 
   Future<String> getDbPath() async {
     final String dbPath;
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (Platform.isWindows) {
+      dbPath = dirname(Platform.resolvedExecutable);
+    } else if (Platform.isLinux || Platform.isMacOS) {
       final docsDir = await getApplicationDocumentsDirectory();
       dbPath = docsDir.path;
     } else {
@@ -647,14 +649,7 @@ class DatabaseHelper {
   }
 
   Future<void> deleteDatabase() async {
-    final String dbPath;
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      final docsDir = await getApplicationDocumentsDirectory();
-      dbPath = docsDir.path;
-    } else {
-      dbPath = await getDatabasesPath();
-    }
-    final path = join(dbPath, AppConstants.databaseName);
+    final path = await getDbPath();
     
     // Close existing connection if any
     if (_database != null) {

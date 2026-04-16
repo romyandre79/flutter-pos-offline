@@ -1,8 +1,8 @@
-import 'package:kreatif_otopart/data/database/database_helper.dart';
-import 'package:kreatif_otopart/data/models/order.dart';
-import 'package:kreatif_otopart/data/models/order_item.dart';
-import 'package:kreatif_otopart/data/models/payment.dart';
-import 'package:kreatif_otopart/data/repositories/customer_repository.dart';
+import 'package:kreatif_pos_offline/data/database/database_helper.dart';
+import 'package:kreatif_pos_offline/data/models/order.dart';
+import 'package:kreatif_pos_offline/data/models/order_item.dart';
+import 'package:kreatif_pos_offline/data/models/payment.dart';
+import 'package:kreatif_pos_offline/data/repositories/customer_repository.dart';
 
 class OrderRepository {
   final DatabaseHelper _databaseHelper;

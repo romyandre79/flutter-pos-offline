@@ -1,9 +1,9 @@
-﻿Analyzing kreatif-otopart...                                    
+﻿Analyzing kreatif-pos_offline...                                    
 
    info - Don't invoke 'print' in production code - check_products.dart:8:3 - avoid_print
    info - Don't invoke 'print' in production code - check_products.dart:12:5 - avoid_print
-warning - Unused import: 'package:kreatif_otopart/data/models/order_item.dart' - lib\core\services\export_service.dart:9:8 - unused_import
-warning - Unused import: 'package:kreatif_otopart/data/models/purchase_order_item.dart' - lib\core\services\export_service.dart:10:8 - unused_import
+warning - Unused import: 'package:kreatif_pos_offline/data/models/order_item.dart' - lib\core\services\export_service.dart:9:8 - unused_import
+warning - Unused import: 'package:kreatif_pos_offline/data/models/purchase_order_item.dart' - lib\core\services\export_service.dart:10:8 - unused_import
    info - Don't invoke 'print' in production code - lib\core\services\import_service.dart:81:9 - avoid_print
    info - Don't invoke 'print' in production code - lib\core\services\import_service.dart:146:9 - avoid_print
    info - Don't invoke 'print' in production code - lib\core\services\import_service.dart:191:9 - avoid_print
@@ -38,9 +38,9 @@ warning - Unused import: 'package:path_provider/path_provider.dart' - lib\presen
    info - Statements in an if should be enclosed in a block - lib\presentation\screens\purchasing\purchase_order_create_screen.dart:489:59 - curly_braces_in_flow_control_structures
    info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\purchasing\purchase_order_create_screen.dart:498:21 - deprecated_member_use
    info - Unnecessary use of multiple underscores - lib\presentation\screens\purchasing\purchase_order_detail_screen.dart:117:45 - unnecessary_underscores
-warning - Unused import: 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:12:8 - unused_import
-warning - Unused import: 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:13:8 - unused_import
-warning - Unused import: 'package:kreatif_otopart/data/models/user.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:14:8 - unused_import
+warning - Unused import: 'package:kreatif_pos_offline/logic/cubits/auth/auth_cubit.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:12:8 - unused_import
+warning - Unused import: 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:13:8 - unused_import
+warning - Unused import: 'package:kreatif_pos_offline/data/models/user.dart' - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:14:8 - unused_import
    info - Unnecessary use of string interpolation - lib\presentation\screens\purchasing\purchase_order_list_screen.dart:129:33 - unnecessary_string_interpolations
 warning - Unused import: 'package:path_provider/path_provider.dart' - lib\presentation\screens\purchasing\supplier_list_screen.dart:14:8 - unused_import
 

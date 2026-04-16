@@ -6,16 +6,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'package:kreatif_otopart/core/theme/app_theme.dart';
-import 'package:kreatif_otopart/data/models/product.dart';
-import 'package:kreatif_otopart/logic/cubits/product/product_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
-import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
-import 'package:kreatif_otopart/data/models/user.dart';
-import 'package:kreatif_otopart/data/models/unit.dart';
-import 'package:kreatif_otopart/logic/cubits/unit/unit_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/unit/unit_state.dart';
+import 'package:kreatif_pos_offline/core/theme/app_theme.dart';
+import 'package:kreatif_pos_offline/data/models/product.dart';
+import 'package:kreatif_pos_offline/logic/cubits/product/product_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_pos_offline/data/models/user.dart';
+import 'package:kreatif_pos_offline/data/models/unit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/unit/unit_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/unit/unit_state.dart';
 
 class ProductFormScreen extends StatefulWidget {
   final Product? product;

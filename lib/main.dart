@@ -4,30 +4,30 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:kreatif_otopart/core/theme/app_theme.dart';
-import 'package:kreatif_otopart/core/utils/date_formatter.dart';
-import 'package:kreatif_otopart/data/database/database_helper.dart';
-import 'package:kreatif_otopart/logic/cubits/auth/auth_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/auth/auth_state.dart';
-import 'package:kreatif_otopart/presentation/screens/auth/login_screen.dart';
-import 'package:kreatif_otopart/presentation/screens/main_screen.dart';
-import 'package:kreatif_otopart/presentation/screens/onboarding/onboarding_screen.dart';
-import 'package:kreatif_otopart/data/repositories/auth_repository.dart';
-import 'package:kreatif_otopart/data/repositories/customer_repository.dart';
-import 'package:kreatif_otopart/data/repositories/order_repository.dart';
-import 'package:kreatif_otopart/data/repositories/report_repository.dart';
-import 'package:kreatif_otopart/data/repositories/service_repository.dart';
-import 'package:kreatif_otopart/data/repositories/user_repository.dart';
-import 'package:kreatif_otopart/data/repositories/supplier_repository.dart';
-import 'package:kreatif_otopart/data/repositories/purchase_order_repository.dart';
-import 'package:kreatif_otopart/data/repositories/product_repository.dart';
-import 'package:kreatif_otopart/data/repositories/payment_repository.dart'; // Add import
-import 'package:kreatif_otopart/data/repositories/settings_repository.dart';
-import 'package:kreatif_otopart/logic/cubits/order/order_cubit.dart';
-import 'package:kreatif_otopart/data/repositories/service_reminder_repository.dart';
-import 'package:kreatif_otopart/logic/cubits/service_reminder/service_reminder_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/settings/settings_cubit.dart';
-import 'package:kreatif_otopart/core/services/notification_service.dart';
+import 'package:kreatif_pos_offline/core/theme/app_theme.dart';
+import 'package:kreatif_pos_offline/core/utils/date_formatter.dart';
+import 'package:kreatif_pos_offline/data/database/database_helper.dart';
+import 'package:kreatif_pos_offline/logic/cubits/auth/auth_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/auth/auth_state.dart';
+import 'package:kreatif_pos_offline/presentation/screens/auth/login_screen.dart';
+import 'package:kreatif_pos_offline/presentation/screens/main_screen.dart';
+import 'package:kreatif_pos_offline/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:kreatif_pos_offline/data/repositories/auth_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/customer_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/order_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/report_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/service_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/user_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/supplier_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/purchase_order_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/product_repository.dart';
+import 'package:kreatif_pos_offline/data/repositories/payment_repository.dart'; // Add import
+import 'package:kreatif_pos_offline/data/repositories/settings_repository.dart';
+import 'package:kreatif_pos_offline/logic/cubits/order/order_cubit.dart';
+import 'package:kreatif_pos_offline/data/repositories/service_reminder_repository.dart';
+import 'package:kreatif_pos_offline/logic/cubits/service_reminder/service_reminder_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/settings/settings_cubit.dart';
+import 'package:kreatif_pos_offline/core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -172,7 +172,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                       boxShadow: AppShadows.medium,
                     ),
                     child: Image.asset(
-                      'assets/icons/logobengkel.png',
+                      'assets/icons/logopos.png',
                       fit: BoxFit.contain,
                     ),
                   ),

@@ -1,5 +1,5 @@
-import 'package:kreatif_otopart/data/database/database_helper.dart';
-import 'package:kreatif_otopart/data/models/pengumuman_template.dart';
+import 'package:kreatif_pos_offline/data/database/database_helper.dart';
+import 'package:kreatif_pos_offline/data/models/pengumuman_template.dart';
 
 class PengumumanTemplateRepository {
   final _dbHelper = DatabaseHelper.instance;

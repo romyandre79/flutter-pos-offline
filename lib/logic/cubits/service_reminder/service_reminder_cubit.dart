@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:kreatif_otopart/data/models/service_reminder.dart';
-import 'package:kreatif_otopart/data/repositories/service_reminder_repository.dart';
+import 'package:kreatif_pos_offline/data/models/service_reminder.dart';
+import 'package:kreatif_pos_offline/data/repositories/service_reminder_repository.dart';
 
 abstract class ServiceReminderState extends Equatable {
   const ServiceReminderState();

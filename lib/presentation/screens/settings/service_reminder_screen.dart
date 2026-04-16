@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kreatif_otopart/core/theme/app_theme.dart';
-import 'package:kreatif_otopart/data/models/service_reminder.dart';
-import 'package:kreatif_otopart/logic/cubits/service_reminder/service_reminder_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/settings/settings_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/settings/settings_state.dart';
+import 'package:kreatif_pos_offline/core/theme/app_theme.dart';
+import 'package:kreatif_pos_offline/data/models/service_reminder.dart';
+import 'package:kreatif_pos_offline/logic/cubits/service_reminder/service_reminder_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/settings/settings_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/settings/settings_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
-import 'package:kreatif_otopart/data/models/pengumuman_template.dart';
+import 'package:kreatif_pos_offline/logic/cubits/pengumuman_template/pengumuman_template_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
+import 'package:kreatif_pos_offline/data/models/pengumuman_template.dart';
 
 class ServiceReminderScreen extends StatefulWidget {
   const ServiceReminderScreen({super.key});

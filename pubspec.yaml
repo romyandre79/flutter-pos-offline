@@ -1,4 +1,4 @@
-name: kreatif_otopart
+name: kreatif_pos_offline
 description: "Aplikasi Kasir POS Offline"
 publish_to: 'none'
 version: 1.0.0+1
@@ -46,15 +46,17 @@ dev_dependencies:
     sdk: flutter
 
 flutter_launcher_icons:
+  remove_alpha_ios: true
+
   android: true
   ios: true
   windows:
     generate: true
-    image_path: "assets/icons/logobengkel.png"
+    image_path: "assets/icons/logopos.png"
     icon_size: 48
-  image_path: "assets/icons/logobengkel.png"
+  image_path: "assets/icons/logopos.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/icons/logobengkel.png"
+  adaptive_icon_foreground: "assets/icons/logopos.png"
 
 flutter:
   uses-material-design: true

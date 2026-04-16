@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kreatif_otopart/core/theme/app_theme.dart';
-import 'package:kreatif_otopart/data/models/customer.dart';
-import 'package:kreatif_otopart/logic/cubits/customer/customer_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/customer/customer_state.dart';
-import 'package:kreatif_otopart/logic/cubits/settings/settings_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/settings/settings_state.dart';
-import 'package:kreatif_otopart/data/models/pengumuman_template.dart';
-import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_cubit.dart';
-import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
+import 'package:kreatif_pos_offline/core/theme/app_theme.dart';
+import 'package:kreatif_pos_offline/data/models/customer.dart';
+import 'package:kreatif_pos_offline/logic/cubits/customer/customer_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/customer/customer_state.dart';
+import 'package:kreatif_pos_offline/logic/cubits/settings/settings_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/settings/settings_state.dart';
+import 'package:kreatif_pos_offline/data/models/pengumuman_template.dart';
+import 'package:kreatif_pos_offline/logic/cubits/pengumuman_template/pengumuman_template_cubit.dart';
+import 'package:kreatif_pos_offline/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PengumumanScreen extends StatefulWidget {

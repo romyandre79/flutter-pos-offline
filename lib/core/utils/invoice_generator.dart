@@ -1,6 +1,6 @@
-import 'package:kreatif_otopart/core/constants/app_constants.dart';
-import 'package:kreatif_otopart/core/utils/date_formatter.dart';
-import 'package:kreatif_otopart/data/database/database_helper.dart';
+import 'package:kreatif_pos_offline/core/constants/app_constants.dart';
+import 'package:kreatif_pos_offline/core/utils/date_formatter.dart';
+import 'package:kreatif_pos_offline/data/database/database_helper.dart';
 
 class InvoiceGenerator {
   /// Generate invoice number

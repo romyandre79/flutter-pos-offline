@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kreatif_otopart/data/models/pengumuman_template.dart';
-import 'package:kreatif_otopart/data/repositories/pengumuman_template_repository.dart';
-import 'package:kreatif_otopart/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
+import 'package:kreatif_pos_offline/data/models/pengumuman_template.dart';
+import 'package:kreatif_pos_offline/data/repositories/pengumuman_template_repository.dart';
+import 'package:kreatif_pos_offline/logic/cubits/pengumuman_template/pengumuman_template_state.dart';
 
 class PengumumanTemplateCubit extends Cubit<PengumumanTemplateState> {
   final PengumumanTemplateRepository _repository;

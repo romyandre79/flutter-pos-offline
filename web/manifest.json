@@ -1,6 +1,6 @@
 {
-    "name": "kreatif_otopart",
-    "short_name": "kreatif_otopart",
+    "name": "kreatif_pos_offline",
+    "short_name": "kreatif_pos_offline",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,5 +1,5 @@
-import 'package:kreatif_otopart/data/database/database_helper.dart';
-import 'package:kreatif_otopart/data/models/service_reminder.dart';
+import 'package:kreatif_pos_offline/data/database/database_helper.dart';
+import 'package:kreatif_pos_offline/data/models/service_reminder.dart';
 
 class ServiceReminderRepository {
   final DatabaseHelper _databaseHelper;
