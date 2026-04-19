@@ -49,7 +49,8 @@ class PosCubit extends Cubit<PosState> {
       String currentCategory = category ?? currentState.selectedCategory;
 
       List<Product> filtered = currentState.products.where((product) {
-        bool matchesQuery = product.name.toLowerCase().contains(currentQuery.toLowerCase());
+        bool matchesQuery = product.name.toLowerCase().contains(currentQuery.toLowerCase()) ||
+            (product.barcode != null && product.barcode!.toLowerCase().contains(currentQuery.toLowerCase()));
         bool matchesCategory = true;
 
           if (currentCategory == 'Kiloan') {

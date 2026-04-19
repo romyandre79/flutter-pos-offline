@@ -29,12 +29,13 @@ class ProductRepository {
 
     if (query != null && query.isNotEmpty) {
       if (whereClause.isNotEmpty) {
-        whereClause += ' AND (name LIKE ? OR barcode = ?)';
+        whereClause += ' AND (name LIKE ? OR barcode LIKE ?)';
       } else {
-        whereClause = '(name LIKE ? OR barcode = ?)';
+        whereClause = '(name LIKE ? OR barcode LIKE ?)';
       }
-      whereArgs.add('%$query%');
-      whereArgs.add(query);
+      final queryParam = '%$query%';
+      whereArgs.add(queryParam);
+      whereArgs.add(queryParam);
     }
 
     final List<Map<String, dynamic>> maps = await db.query(

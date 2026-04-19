@@ -345,7 +345,9 @@ class _PurchaseOrderItemEditorState extends State<PurchaseOrderItemEditor> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredProducts = widget.products
-          .where((p) => p.type == ProductType.goods && p.name.toLowerCase().contains(query))
+          .where((p) => p.type == ProductType.goods && 
+              (p.name.toLowerCase().contains(query) || 
+               (p.barcode != null && p.barcode!.toLowerCase().contains(query))))
           .take(5) // Limit results
           .toList();
       
